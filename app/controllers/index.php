@@ -348,6 +348,13 @@ class IndexController extends StudipController
         $user = $GLOBALS['user'];
 
         $meeting = new Meeting($meetingId);
+        $driver = $this->driver_factory->getDriver($meeting->driver);
+        // ugly hack for BBB
+        if ($driver instanceof ElanEv\Driver\BigBlueButton) {
+            // TODO: check if recreation is necessary
+            $meetingParameters = $meeting->getMeetingParameters();
+            $driver->createMeeting($meetingParameters);
+        }
         $joinParameters = new JoinParameters();
         $joinParameters->setMeetingId($meetingId);
         $joinParameters->setIdentifier($meeting->identifier);
@@ -357,7 +364,6 @@ class IndexController extends StudipController
         $joinParameters->setFirstName($user->Vorname);
         $joinParameters->setLastName($user->Nachname);
 
-        $driver = $this->driver_factory->getDriver($meeting->driver);
 
         if ($this->userCanModifyCourse($this->getCourseId()) || $meeting->join_as_moderator) {
             $joinParameters->setPassword($meeting->moderator_password);
@@ -469,6 +475,7 @@ class IndexController extends StudipController
         $meeting->driver = $driver_name;
         $meeting->attendee_password = $this->generateAttendeePassword();
         $meeting->moderator_password = $this->generateModeratorPassword();
+        $meeting->remote_id = md5(uniqid());
         $meeting->store();
         $meetingParameters = $meeting->getMeetingParameters();
 
