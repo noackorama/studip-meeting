@@ -99,7 +99,7 @@ class IndexController extends StudipController
             Navigation::activateItem('/profile/meetings');
         }
 
-        $this->courseConfig = CourseConfig::findByCourseId($this->getCourseId());
+       $this->courseConfig = CourseConfig::findByCourseId($this->getCourseId());
 
         libxml_use_internal_errors(true);
     }
@@ -347,7 +347,10 @@ class IndexController extends StudipController
         /** @var Seminar_User $user */
         $user = $GLOBALS['user'];
 
-        $meeting = new Meeting($meetingId);
+        $meeting = Meeting::find($meetingId);
+        if (!($meeting && $meeting->courses->find($this->getCourseId()))) {
+            throw new Trails_Exception(400);
+        }
         $driver = $this->driver_factory->getDriver($meeting->driver);
         // ugly hack for BBB
         if ($driver instanceof ElanEv\Driver\BigBlueButton) {
