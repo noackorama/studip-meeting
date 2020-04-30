@@ -174,7 +174,7 @@ class IndexController extends StudipController
     {
         if ($this->userCanModifyCourse($this->getCourseId())) {
             if (!Request::get('name')) {
-                $this->flash['errors'] = [$this->_('Bitte geben Sie dem Meeting einen Namen.')];
+                $this->flash['errors'] = [_('Bitte geben Sie dem Meeting einen Namen.')];
             } else {
                 $this->createMeeting(\Request::get('name'), Request::get('driver'));
             }
