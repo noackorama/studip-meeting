@@ -174,7 +174,7 @@ class IndexController extends StudipController
     {
         if ($this->userCanModifyCourse($this->getCourseId())) {
             if (!Request::get('name')) {
-                $this->flash['errors'] = [_('Bitte geben Sie dem Meeting einen Namen.')];
+                $_SESSION['studip_meetings_messages']['error'][] = _('Bitte geben Sie dem Meeting einen Namen.');
             } else {
                 $this->createMeeting(\Request::get('name'), Request::get('driver'));
             }
@@ -362,7 +362,7 @@ class IndexController extends StudipController
         $joinParameters->setMeetingId($meetingId);
         $joinParameters->setIdentifier($meeting->identifier);
         $joinParameters->setRemoteId($meeting->remote_id);
-        $joinParameters->setUsername(get_username($user->id));
+        $joinParameters->setUsername($user->Vorname . ' ' . $user->Nachname . ' (' . $user->username . ')');
         $joinParameters->setEmail($user->Email);
         $joinParameters->setFirstName($user->Vorname);
         $joinParameters->setLastName($user->Nachname);
