@@ -119,17 +119,17 @@ if ($showUser) {
                 <td class="recording-url">
                     <? if (class_implements($driver, 'RecordingInterface')) : ?>
                     <? $recordings = $driver->getRecordings($meetingCourse->meeting->getMeetingParameters()) ?>
-                    <? if (!empty($recordings)) foreach ($recordings as $recording) : ?>
-                        <a href="<?= $recording->playback->format->url ?>" target="_blank" class="meeting-recording-url">
-                            <? $title = sprintf(_('zur Aufzeichnung vom %s'), date('d.m.Y, H:i:s', (int)$recording->startTime / 1000)) ?>
-                            <? if (StudipVersion::newerThan('3.3')) : ?>
-                                <?= Icon::create('video', 'clickable', array('title' => _('zur Aufzeichnung'))) ?>
-                            <? else: ?>
-                                <img src="<?=$GLOBALS['ASSETS_URL']?>/images/icons/16/blue/video.png" title="<?=_('zur Aufzeichnung')?>">
-                            <? endif ?>
-                        </a>
-                    <? endforeach ?>
-
+                        <? if (!empty($recordings)) foreach ($recordings as $recording) : ?>
+                            <a href="<?= $recording->playback->format->url ?>" target="_blank" class="meeting-recording-url">
+                                <? $title = sprintf(_('zur Aufzeichnung vom %s'), date('d.m.Y, H:i:s', (int)$recording->startTime / 1000)) ?>
+                                <? if (StudipVersion::newerThan('3.3')) : ?>
+                                    <?= Icon::create('video', 'clickable', array('title' => _('zur Aufzeichnung'))) ?>
+                                <? else: ?>
+                                    <img src="<?=$GLOBALS['ASSETS_URL']?>/images/icons/16/blue/video.png" title="<?=_('zur Aufzeichnung')?>">
+                                <? endif ?>
+                            </a>
+                        <? endforeach ?>
+                    <?php endif ?>
                     <a href="<?=$meetingCourse->meeting->recording_url?>" target="_blank" class="meeting-recording-url"<?=!$meetingCourse->meeting->recording_url ? ' style="display:none;"' : ''?>>
                         <? if (StudipVersion::newerThan('3.3')) : ?>
                             <?= Icon::create('video', 'clickable', array('title' => _('zur Aufzeichnung'))) ?>
