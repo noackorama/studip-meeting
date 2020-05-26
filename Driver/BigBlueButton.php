@@ -50,12 +50,19 @@ class BigBlueButton implements DriverInterface, RecordingInterface
             'dialNumber' => '',
             'webVoice' => '',
         );
+
         if ($features = json_decode($parameters->getMeetingFeatures(), true)) {
             if (isset($features['roomSizeProfiles'])) { // keen unwanted params
                 unset($features['roomSizeProfiles']);
             }
+
+            if ($features['guestPolicy'] == 'ALWAYS_DENY') {
+                unset($features['guestPolicy']);
+            }
+
             $params = array_merge($params, $features);
         }
+
         $response = $this->performRequest('create', $params);
         $xml = new \SimpleXMLElement($response);
 
@@ -279,7 +286,7 @@ class BigBlueButton implements DriverInterface, RecordingInterface
      *
      * @return array consists of nested list of ConfigOptions
     */
-    static private function roomSizeProfile() {
+    static public function roomSizeProfile() {
         return [
             new ConfigOption('small', dgettext(MeetingPlugin::GETTEXT_DOMAIN, 'Kleiner Raum'), [
                 new ConfigOption('maxParticipants', dgettext(MeetingPlugin::GETTEXT_DOMAIN, 'Maximale Teilnehmerzahl'), 50, self::getFeatureInfo('maxParticipants')),
