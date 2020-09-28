@@ -63,6 +63,7 @@ class RoomEdit extends MeetingsController
             !isset($json['server_index']) ?: $meeting->server_index = $json['server_index'];
 
             // apply default features
+
             if (isset($json['features'])) {
                 if (!is_numeric($json['features']['duration'])) {
                     $json['features']['duration'] = "240";
@@ -76,8 +77,8 @@ class RoomEdit extends MeetingsController
                         $record = 'true';
                         if (Driver::getConfigValueByDriver($json['driver_name'], 'opencast')) { // config check for opencast
                             $series_id = MeetingPlugin::checkOpenCast($json['cid']);
-                            if ($series_id && is_array($series_id)) {
-                                $opencast_series_id = $series_id[0];
+                            if ($series_id) {
+                                $opencast_series_id = $series_id;
                             } else {
                                 $message = [
                                     'text' => _('Opencast Series id kann nicht gefunden werden!'),
@@ -91,7 +92,7 @@ class RoomEdit extends MeetingsController
                     }
                 }
                 $json['features']['record'] = $record;
-                !$opencast_series_id ?: $json['features']['meta_opencast-series-id'] = $opencast_series_id;
+                !$opencast_series_id ?: $json['features']['meta_opencast-dc-isPartOf'] = $opencast_series_id;
                 $meeting->features = json_encode($json['features']);
             }
             $meeting->chdate = $change_date->getTimestamp();

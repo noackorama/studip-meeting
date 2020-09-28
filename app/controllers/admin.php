@@ -89,6 +89,11 @@ class AdminController extends MeetingsController
 
         parent::before_filter($action, $args);
 
+        // Permission check
+        if ($GLOBALS['user']->perms !== 'root') {
+            throw new AccessDeniedException();
+        }
+
         // set default layout
         $this->templateFactory = $GLOBALS['template_factory'];
         $layout = $this->templateFactory->open('layouts/base');
@@ -121,7 +126,7 @@ class AdminController extends MeetingsController
         switch ($id) {
 
             case 'main':
-                $helpText = $this->_('Administrationsseite für das Plugin zur Durchführung und Verwaltung von Live-Online-Treffen, Webinaren und Videokonferenzen.');
+                $helpText = $this->_('Administrationsseite für das Plugin zur Durchführung und Verwaltung von Live-Online-Treffen, Veranstaltungen und Videokonferenzen.');
                 $helpBar = Helpbar::get();
                 $helpBar->addPlainText('', $helpText);
                 break;
