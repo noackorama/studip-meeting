@@ -46,7 +46,9 @@ class ConfigListCourse extends MeetingsController
             'deleteRecording' => $displayDeleteRecording,
         ];
 
-        $course_config['introduction'] = formatReady($course_config['introduction']);
+        $course_config['introduction'] = $course_config['introduction']
+            ? formatReady($course_config['introduction'])
+            : '';
 
         if (!empty($config)) {
             $config = $this->setDefaultServerProfiles($config, $cid);
@@ -89,7 +91,7 @@ class ConfigListCourse extends MeetingsController
 
     /**
      * Generates server preset settings and features based on number of participants
-     * it adds another array to config called server_defaults 
+     * it adds another array to config called server_defaults
      *
      * @param $config   plugin general config
      * @param $cid      course id
@@ -106,7 +108,7 @@ class ConfigListCourse extends MeetingsController
             foreach ($settings['servers'] as $server_index => $server_values) {
 
                 //Take care of max participants and maxAllowedParticipants
-                $server_defaults[$server_index]['totalMembers'] = $members_count;
+                $server_defaults[$server_index]['totalMembers'] = max(20, $members_count + 5);
                 if (isset($server_values['maxParticipants']) && $server_values['maxParticipants'] > 0) {
                     $server_defaults[$server_index]['maxAllowedParticipants'] = $server_values['maxParticipants'];
                     if ($members_count >= $server_values['maxParticipants']) {
@@ -125,7 +127,7 @@ class ConfigListCourse extends MeetingsController
                                 $value = $feature_value;
                                 if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)) {
                                     $value = filter_var($feature_value, FILTER_VALIDATE_BOOLEAN);
-                                } 
+                                }
                                 $server_defaults[$server_index][$feature_name] = $value;
                             }
                         }
@@ -139,7 +141,7 @@ class ConfigListCourse extends MeetingsController
     }
 
     /**
-     * Check against record feature, if exists looks for opencast recording capability and changes the 
+     * Check against record feature, if exists looks for opencast recording capability and changes the
      *
      * @param $config   plugin general config
      * @param $cid      course id
@@ -149,8 +151,8 @@ class ConfigListCourse extends MeetingsController
     private function setOpencastTooltipText($config, $cid)
     {
         foreach ($config as $driver_name => $settings) {
-            if ((isset($settings['record']) && $settings['record'] == "1") 
-                    && (isset($settings['opencast']) && $settings['opencast'] == "1") 
+            if ((isset($settings['record']) && $settings['record'] == "1")
+                    && (isset($settings['opencast']) && $settings['opencast'] == "1")
                     && !empty(MeetingPlugin::checkOpenCast($cid))
                     && (isset($settings['features']['record']))) {
                 $record_index = array_search('record', array_column($settings['features']['record'], 'name'));
